@@ -1,6 +1,8 @@
 # SocialMediaApp
 
-### A Simple Social Media app built by using Django and FireBase.
+#### A Simple Social Media app built by using Django and FireBase.
+
+## Features
 
 1. User Register
 

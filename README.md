@@ -72,3 +72,31 @@
 
    - API: http://127.0.0.1:8000/posts/
    - Request: GET
+
+7. Sort Posts
+
+   - API: http://127.0.0.1:8000/sortposts/
+   - Request: GET
+
+8. Filter Posts
+
+   - API: http://127.0.0.1:8000/filterposts/
+   - Request: POST
+   - Example Data:
+     ```json
+     {
+       "email": "sam@gmail.com"
+     }
+     ```
+
+9. Search on Posts
+
+   - API: http://127.0.0.1:8000/searchposts/
+   - Request: POST
+   - Example Data:
+     ```json
+     {
+       "email": "admin@gmail.com",
+       "searchkey": "first"
+     }
+     ```

@@ -22,7 +22,6 @@
    - API: http://127.0.0.1:8000/login/
    - Request: POST
    - Example Data:
-
      ```json
      {
        "email": "sam@gmail.com",

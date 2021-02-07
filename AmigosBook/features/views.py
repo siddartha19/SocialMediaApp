@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import os, sys, json
 import pyrebase
+import re
 
 from AmigosBook.firebasesetup import connection
 firebase = pyrebase.initialize_app(connection.firebaseconfig)
@@ -180,5 +181,64 @@ def listPosts(request):
           return HttpResponse(json.dumps({"status": "Error", "Desc": "Invalid Request"}), status=403)
 
      response = dict(db.child('posts').get().val())
+     return HttpResponse(json.dumps(response), status=200)
+
+@csrf_exempt
+def sortPosts(request):
+     if request.method != "GET":
+          return HttpResponse(json.dumps({"status": "Error", "Desc": "Invalid Request"}), status=403)
+
+     data = dict(db.child('posts').get().val())
+     response = sorted(data.items(), key = lambda x: x[1]['likes'], reverse=True)
+     return HttpResponse(json.dumps(response), status=200)
+
+@csrf_exempt
+def filterPosts(request):
+     if request.method != "POST":
+          return HttpResponse(json.dumps({"status": "Error", "Desc": "Invalid Request"}), status=403)
+
+     try:
+          data = json.loads(request.body) if len(request.body)>0 else None
+     except:
+          return HttpResponse(json.dumps({"status": "Error", "Desc": "Invalid Data"}), status=400)
+
+     if 'email' not in data:
+          return HttpResponse(json.dumps({"status": "Error", "Desc": "Email not found"}), status=400)
+     
+     email = data['email'].split('@')[0]
+     data = dict(db.child('posts').get().val())
+     response = {}
+     for post in data:
+          if email == post.split('_')[0]:
+               response[post] = data[post]
+
+     if response == {}:
+          response['status'] = "No related posts found!!"
+     return HttpResponse(json.dumps(response), status=200)
+
+@csrf_exempt
+def searchPosts(request):
+     if request.method != "POST":
+          return HttpResponse(json.dumps({"status": "Error", "Desc": "Invalid Request"}), status=403)
+
+     try:
+          data = json.loads(request.body) if len(request.body)>0 else None
+     except:
+          return HttpResponse(json.dumps({"status": "Error", "Desc": "Invalid Data"}), status=400)
+
+     if 'email' not in data:
+          return HttpResponse(json.dumps({"status": "Error", "Desc": "Email not found"}), status=400)
+     if 'searchkey' not in data:
+          return HttpResponse(json.dumps({"status": "Error", "Desc": "Search Key not found"}), status=400)
+     
+     searchkey = data['searchkey'].lower()
+     data = dict(db.child('posts').get().val())
+     response = {}
+     for post in data.keys():
+          if re.search(searchkey,data[post]['posttext'].lower()):
+               print(re.search(searchkey,data[post]['posttext']), data[post]['posttext'])
+               response[post] = data[post]
+     if response == {}:
+          response['status'] = "No related posts found!!"
      return HttpResponse(json.dumps(response), status=200)
      

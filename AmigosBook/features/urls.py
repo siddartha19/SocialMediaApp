@@ -9,4 +9,7 @@ urlpatterns = [
      url(r'^likepost/$', views.likePost, name ="Like post"),
      url(r'^commentpost/$', views.commentPost, name ="Comment post"),
      url(r'^posts/$', views.listPosts, name ="List posts"),
+     url(r'^sortposts/$', views.sortPosts, name ="Sort posts"),
+     url(r'^filterposts/$', views.filterPosts, name ="Filter posts"),
+     url(r'^searchposts/$', views.searchPosts, name ="Search post details"),
 ]

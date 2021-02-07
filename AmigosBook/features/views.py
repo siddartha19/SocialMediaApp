@@ -194,18 +194,13 @@ def sortPosts(request):
 
 @csrf_exempt
 def filterPosts(request):
-     if request.method != "POST":
+     if request.method != "GET":
           return HttpResponse(json.dumps({"status": "Error", "Desc": "Invalid Request"}), status=403)
 
-     try:
-          data = json.loads(request.body) if len(request.body)>0 else None
-     except:
-          return HttpResponse(json.dumps({"status": "Error", "Desc": "Invalid Data"}), status=400)
-
-     if 'email' not in data:
+     if 'email' not in request.GET:
           return HttpResponse(json.dumps({"status": "Error", "Desc": "Email not found"}), status=400)
      
-     email = data['email'].split('@')[0]
+     email = request.GET['email'].split('@')[0]
      data = dict(db.child('posts').get().val())
      response = {}
      for post in data:
@@ -218,20 +213,13 @@ def filterPosts(request):
 
 @csrf_exempt
 def searchPosts(request):
-     if request.method != "POST":
+     if request.method != "GET":
           return HttpResponse(json.dumps({"status": "Error", "Desc": "Invalid Request"}), status=403)
 
-     try:
-          data = json.loads(request.body) if len(request.body)>0 else None
-     except:
-          return HttpResponse(json.dumps({"status": "Error", "Desc": "Invalid Data"}), status=400)
-
-     if 'email' not in data:
-          return HttpResponse(json.dumps({"status": "Error", "Desc": "Email not found"}), status=400)
-     if 'searchkey' not in data:
+     if 'searchkey' not in request.GET:
           return HttpResponse(json.dumps({"status": "Error", "Desc": "Search Key not found"}), status=400)
      
-     searchkey = data['searchkey'].lower()
+     searchkey = request.GET['searchkey'].lower()
      data = dict(db.child('posts').get().val())
      response = {}
      for post in data.keys():
